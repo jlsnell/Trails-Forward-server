@@ -1,0 +1,3 @@
+class WaterTile < ResourceTile
+  
+end

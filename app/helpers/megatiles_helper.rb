@@ -1,0 +1,2 @@
+module MegatilesHelper
+end

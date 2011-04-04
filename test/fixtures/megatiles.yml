@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  world_id: 1
+  x: 1
+  y: 1
+  owner_id: 1
+
+two:
+  world_id: 1
+  x: 1
+  y: 1
+  owner_id: 1

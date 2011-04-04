@@ -1,0 +1,30 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @world.name %>
+</p>
+
+<p>
+  <b>Height:</b>
+  <%= @world.height %>
+</p>
+
+<p>
+  <b>Width:</b>
+  <%= @world.width %>
+</p>
+
+<p>
+  <b>Tile width:</b>
+  <%= @world.tile_width %>
+</p>
+
+<p>
+  <b>Tile height:</b>
+  <%= @world.tile_height %>
+</p>
+
+
+<%= link_to 'Edit', edit_world_path(@world) %> |
+<%= link_to 'Back', worlds_path %>

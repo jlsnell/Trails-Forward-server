@@ -1,0 +1,3 @@
+class BuildingTile < ResourceTile
+  
+end

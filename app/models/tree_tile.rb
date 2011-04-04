@@ -1,0 +1,3 @@
+class TreeTile < ResourceTile
+  
+end
