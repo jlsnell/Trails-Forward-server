@@ -1,4 +1,3 @@
-
 world = World.create do |w|
   w.name = "Example World #{rand(100000)}"
   w.year_start = 1880
