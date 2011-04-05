@@ -13,10 +13,12 @@ class Broker
   end
   
   def execute_sale(bid)
-    ActiveRecord::Base.transaction do
-      raise "Can't process a sale for an unaccepted bid" unless bid.status == "Accepted"
+    raise "Can't process a sale for an unaccepted bid" unless bid.status == "Accepted"
     
-      transfer_assets(bid)
+    ActiveRecord::Base.transaction do   
+      lock_assets_for_bid bid
+       
+      transfer_assets bid
     
       if bid.listing  #this wasn't unsolicited
         bid.listing.bids.each do |bid_to_reject|
@@ -57,7 +59,7 @@ class Broker
   def transfer_assets(bid)
     if bid.listing  #this wasn't unsolicited
       bid.listing.status = Listing::Verbiage[:sold]
-      bid.listing.save
+      bid.listing.save!
       #any hooks to notify listing owner go here
     end
     
@@ -65,23 +67,36 @@ class Broker
 
     #I gotsta get paid
     bid.bidder.balance -= bid.money
+    bid.bidder.save!
+    
     bid.current_owner.balance += bid.money
+    bid.current_owner.save!
     
     #transfer property
     if bid.offered_land 
       bid.offered_land.megatiles.each do |mt|
         mt.owner = bid.current_owner
-        mt.save
+        mt.save!
       end      
     end
     
     bid.requested_land.megatiles.each do |mt|
       mt.owner = bid.bidder
-      mt.save
+      mt.save!
     end
     
-    bid.save
+    bid.save!
     
+  end
+
+  def lock_assets_for_bid
+    world = bid.bidder.world.lock!
+    # Alas, we can't be more fine-grained than this because we can't 
+    # release a lock once we have it other than by ending the transaction
+    # ideally we'd grab a world-level lock, then get more fine-grained locks on all related
+    # megatile owners/bidders, then release the world-level lock.
+    # I don't think there's a way to do this given MySQL/Rails pessimistic
+    # locking semantics, at least while avoiding deadlock.
   end
 
   def reject_bid(rejected_bid, explanation)
@@ -90,7 +105,7 @@ class Broker
       bid.rejection_reason = explanation
       #any hooks and such go here
       
-      bid.save
+      bid.save!
     end
   end
   
@@ -100,14 +115,16 @@ class Broker
       bid.rejection_reason = explanation
       #any hooks and such go here
       
-      bid.save
+      bid.save!
     end
   end
   
   def cancel_listing(listing, explanation)
     if listing.is_active?
       listing.status = Listing::Verbiage[:cancelled]
-      listing.save
+      #hooks go here
+      
+      listing.save!
     end
   end
 
