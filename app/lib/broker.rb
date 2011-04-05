@@ -14,10 +14,10 @@ class Broker
   
   def execute_sale(bid)
     raise "Can't process a sale for an unaccepted bid" unless bid.status == "Accepted"
-    
+        
     ActiveRecord::Base.transaction do   
-      lock_assets_for_bid bid
-       
+      lock_assets_for_bid bid 
+      
       transfer_assets bid
     
       if bid.listing  #this wasn't unsolicited
@@ -90,7 +90,11 @@ class Broker
   end
 
   def lock_assets_for_bid
-    world = bid.bidder.world.lock!
+    world = bid.bidder.world.lock! 
+    
+    #If the above really slows things down, then we can tack on:
+    #    unless ActiveRecord::Base.connection.adapter_name == 'MySQL'   #assumes InnoDB
+    
     # Alas, we can't be more fine-grained than this because we can't 
     # release a lock once we have it other than by ending the transaction
     # ideally we'd grab a world-level lock, then get more fine-grained locks on all related
