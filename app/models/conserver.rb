@@ -1,0 +1,2 @@
+class Conserver < Player
+end

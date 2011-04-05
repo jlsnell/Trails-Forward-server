@@ -1,0 +1,2 @@
+class Builder < Player
+end

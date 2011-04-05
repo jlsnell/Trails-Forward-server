@@ -1,4 +1,5 @@
 class Bid < ActiveRecord::Base
+  versioned
   belongs_to :bidder, :class_name => 'Player'
   belongs_to :current_owner, :class_name => 'Player'
   belongs_to :listing

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110404205019) do
+ActiveRecord::Schema.define(:version => 20110405010822) do
 
   create_table "bids", :force => true do |t|
     t.integer  "listing_id"
@@ -35,13 +35,6 @@ ActiveRecord::Schema.define(:version => 20110404205019) do
     t.datetime "updated_at"
     t.string   "status",               :default => "Active"
     t.integer  "bid_id"
-  end
-
-  create_table "megatile_grouping_megatile", :force => true do |t|
-    t.integer  "megatile_grouping_id"
-    t.integer  "megatile_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "megatile_grouping_megatiles", :force => true do |t|
@@ -71,6 +64,7 @@ ActiveRecord::Schema.define(:version => 20110404205019) do
     t.datetime "updated_at"
     t.integer  "world_id"
     t.integer  "balance"
+    t.string   "type"
   end
 
   create_table "resource_tiles", :force => true do |t|

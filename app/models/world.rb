@@ -1,4 +1,6 @@
 class World < ActiveRecord::Base
+  versioned
+  
   has_many :megatiles
   has_many :resource_tiles
   has_many :players
