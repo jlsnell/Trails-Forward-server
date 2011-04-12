@@ -13,6 +13,8 @@ gem 'sqlite3'
 
 gem 'acts_as_api', :git => 'git://github.com/fabrik42/acts_as_api.git'
 
+#gem 'builder'
+
 # Use unicorn as the web server
 # gem 'unicorn'
 

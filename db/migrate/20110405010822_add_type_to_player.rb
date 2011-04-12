@@ -1,4 +1,4 @@
-class AddTypeToPlayers < ActiveRecord::Migration
+class AddTypeToPlayer < ActiveRecord::Migration
   def self.up
     add_column :players, :type, :string
   end

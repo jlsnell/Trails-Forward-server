@@ -32,7 +32,7 @@ puts ''
 
 puts "Creating users and players..."
 players = []
-player_types = [Lumberjack, Builder, Conserver]
+player_types = [Lumberjack, Developer, Conserver]
 3.times do |i|
   u = User.create :name => "User #{world.id}-#{i}"
   p = player_types[i].create :user => u, :world => world, :balance => 1000

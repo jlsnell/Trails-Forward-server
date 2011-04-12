@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110406162112) do
+ActiveRecord::Schema.define(:version => 20110405031152) do
 
   create_table "bids", :force => true do |t|
     t.integer  "listing_id"
@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(:version => 20110406162112) do
     t.datetime "updated_at"
     t.string   "rejection_reason"
     t.integer  "counter_to_id"
+    t.integer  "lock_version",      :default => 0
   end
 
   create_table "listings", :force => true do |t|
@@ -35,6 +36,7 @@ ActiveRecord::Schema.define(:version => 20110406162112) do
     t.datetime "updated_at"
     t.string   "status",               :default => "Active"
     t.integer  "bid_id"
+    t.integer  "lock_version",         :default => 0
   end
 
   create_table "megatile_grouping_megatiles", :force => true do |t|
@@ -56,6 +58,7 @@ ActiveRecord::Schema.define(:version => 20110406162112) do
     t.integer  "owner_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "lock_version", :default => 0
   end
 
   create_table "players", :force => true do |t|
@@ -65,6 +68,7 @@ ActiveRecord::Schema.define(:version => 20110406162112) do
     t.integer  "world_id"
     t.integer  "balance"
     t.string   "type"
+    t.integer  "lock_version", :default => 0
   end
 
   create_table "resource_tiles", :force => true do |t|
@@ -78,6 +82,7 @@ ActiveRecord::Schema.define(:version => 20110406162112) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "world_id"
+    t.integer  "lock_version", :default => 0
   end
 
   create_table "users", :force => true do |t|

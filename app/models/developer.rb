@@ -1,0 +1,2 @@
+class Developer < Player
+end
