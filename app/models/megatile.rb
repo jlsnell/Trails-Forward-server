@@ -1,6 +1,7 @@
 class Megatile < ActiveRecord::Base
   versioned
-  
+  acts_as_api
+    
   belongs_to :world
   belongs_to :owner, :class_name => 'Player'
   has_many :resource_tiles
@@ -68,5 +69,5 @@ class Megatile < ActiveRecord::Base
     end
     return ret
   end
-  
+      
 end

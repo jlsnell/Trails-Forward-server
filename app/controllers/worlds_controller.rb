@@ -1,13 +1,12 @@
 class WorldsController < ApplicationController
+  respond_to :xml, :json
+  
   # GET /worlds
   # GET /worlds.xml
   def index
     @worlds = World.all
 
-    respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml => @worlds }
-    end
+    respond_with @worlds
   end
 
   # GET /worlds/1
@@ -15,10 +14,7 @@ class WorldsController < ApplicationController
   def show
     @world = World.find(params[:id])
 
-    respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @world }
-    end
+    respond_with @world
   end
 
   # GET /worlds/new

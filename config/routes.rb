@@ -1,13 +1,15 @@
 TrailsForwardWorld::Application.routes.draw do
-  resources :players
+  resources :users do
+    resources :players, :only => [:index, :show]
+  end
 
-  resources :users
-
-  resources :resource_tiles
-
-  resources :megatiles
-
-  resources :worlds
+  resources :worlds, :only => [:index, :show] do
+    resources :players, :only => [:index, :show]
+    resources :megatiles, :only => [:index, :show] do
+      resources :resource_tiles, :only => [:index, :show]
+    end
+  end
+    
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

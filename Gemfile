@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.5'
+gem 'rails', '3.0.6'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -8,6 +8,10 @@ gem 'rails', '3.0.5'
 gem 'sqlite3'
 
 gem 'vestal_versions', :git => 'git://github.com/adamcooper/vestal_versions'
+
+gem 'builder'
+
+gem 'acts_as_api', :git => 'git://github.com/fabrik42/acts_as_api.git'
 
 # Use unicorn as the web server
 # gem 'unicorn'
