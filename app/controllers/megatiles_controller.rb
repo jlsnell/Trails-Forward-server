@@ -1,7 +1,5 @@
 class MegatilesController < ApplicationController
-  
-  respond_to :xml, :json
-  
+    
   # GET /megatiles
   # GET /megatiles.xml
   def index

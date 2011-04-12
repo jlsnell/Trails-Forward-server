@@ -1,14 +1,6 @@
 GIT
-  remote: git://github.com/adamcooper/vestal_versions
-  revision: 6273df533f85014062e346cb1807b0531a809ee2
-  specs:
-    vestal_versions (1.2.2)
-      activerecord (>= 3.0.0)
-      activesupport (>= 3.0.0)
-
-GIT
   remote: git://github.com/fabrik42/acts_as_api.git
-  revision: 997158674ee765b9e8f47acd4f73fdaf46c16ff5
+  revision: a7c1af169e1c951c9f39bb6dfe27ba08d315be39
   specs:
     acts_as_api (0.3.1)
       activemodel (>= 3.0.0)
@@ -87,7 +79,5 @@ PLATFORMS
 
 DEPENDENCIES
   acts_as_api!
-  builder
   rails (= 3.0.6)
   sqlite3
-  vestal_versions!

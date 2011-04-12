@@ -1,4 +1,4 @@
 class User < ActiveRecord::Base
-  versioned
+  # versioned
   has_many :players
 end

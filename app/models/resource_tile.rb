@@ -1,5 +1,5 @@
 class ResourceTile < ActiveRecord::Base
-  versioned
+  # versioned
   acts_as_api
   
   belongs_to :megatile
@@ -10,6 +10,17 @@ class ResourceTile < ActiveRecord::Base
     self.species = nil
     self.quality = nil
     save!
+  end
+  
+  api_accessible :resource do |template|
+    template.add :id
+    template.add :x
+    template.add :y
+    template.add :type
+    template.add :species
+    template.add :quality
+    template.add :zoned_use
+    template.add :updated_at
   end
   
 end

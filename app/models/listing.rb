@@ -1,5 +1,5 @@
 class Listing < ActiveRecord::Base
-  versioned
+  # versioned
 
   belongs_to :owner, :class_name => 'Player'
   belongs_to :megatile_grouping

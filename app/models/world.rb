@@ -1,5 +1,7 @@
 class World < ActiveRecord::Base
-  versioned
+  # versioned
+  
+  acts_as_api
   
   has_many :megatiles
   has_many :resource_tiles
@@ -50,5 +52,19 @@ class World < ActiveRecord::Base
   def manager
     GameWorldManager.for_world(self)
   end
+  
+  api_accessible :world_without_tiles do |template|
+    template.add :id
+    template.add :name
+    template.add :year_start
+    template.add :year_current
+    template.add :height
+    template.add :width
+    template.add :megatile_width
+    template.add :megatile_height
+    template.add :created_at
+    template.add :updated_at
+    template.add :players, :template => :id_and_name
+  end    
   
 end
