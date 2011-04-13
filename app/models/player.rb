@@ -1,5 +1,5 @@
 class Player < ActiveRecord::Base
-  # versioned
+  versioned
   acts_as_api
   
   has_many :megatiles, :inverse_of => :owner, :foreign_key => 'owner_id'

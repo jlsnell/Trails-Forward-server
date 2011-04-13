@@ -1,5 +1,5 @@
 class World < ActiveRecord::Base
-  # versioned
+  versioned
   
   acts_as_api
   

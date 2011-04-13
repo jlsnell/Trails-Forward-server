@@ -7,9 +7,9 @@ gem 'rails', '3.0.6'
 
 gem 'sqlite3'
 
-#gem 'vestal_versions', :git => 'git://github.com/adamcooper/vestal_versions'
+gem 'vestal_versions', :git => 'git://github.com/adamcooper/vestal_versions'
 
-gem 'vestal_versions', :git => 'git://github.com/carpodaster/vestal_versions.git'
+#gem 'vestal_versions', :git => 'git://github.com/carpodaster/vestal_versions.git'
 
 gem 'acts_as_api', :git => 'git://github.com/fabrik42/acts_as_api.git'
 

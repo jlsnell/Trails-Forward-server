@@ -1,5 +1,5 @@
 class Megatile < ActiveRecord::Base
-  # versioned
+  versioned
   acts_as_api
     
   belongs_to :world
@@ -74,7 +74,6 @@ class Megatile < ActiveRecord::Base
     template.add :id
     template.add :x
     template.add :y
-    #template.add lambda{|m| m.owner ? m.owner.id : "foo"}, :as => :owner_id, :template => :id_and_name
     template.add :owner, :template => :id_and_name
     template.add :updated_at
     template.add :resource_tiles, :template => :resource

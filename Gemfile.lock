@@ -1,9 +1,10 @@
 GIT
-  remote: git://github.com/carpodaster/vestal_versions.git
-  revision: 7cf6d49bf0a1602d0a59c4c7f28ea2dbf338c2e4
+  remote: git://github.com/adamcooper/vestal_versions
+  revision: 6273df533f85014062e346cb1807b0531a809ee2
   specs:
-    vestal_versions (1.0.3)
-      activerecord (>= 2.1.0)
+    vestal_versions (1.2.2)
+      activerecord (>= 3.0.0)
+      activesupport (>= 3.0.0)
 
 GIT
   remote: git://github.com/fabrik42/acts_as_api.git
