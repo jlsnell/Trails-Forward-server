@@ -13,6 +13,8 @@ gem 'vestal_versions', :git => 'git://github.com/adamcooper/vestal_versions'
 
 gem 'acts_as_api', :git => 'git://github.com/fabrik42/acts_as_api.git'
 
+gem 'mysql'
+
 #gem 'builder'
 
 # Use unicorn as the web server
