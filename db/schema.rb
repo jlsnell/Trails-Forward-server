@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110405031152) do
+ActiveRecord::Schema.define(:version => 20110413145750) do
 
   create_table "bids", :force => true do |t|
     t.integer  "listing_id"
@@ -27,6 +27,8 @@ ActiveRecord::Schema.define(:version => 20110405031152) do
     t.integer  "lock_version",      :default => 0
   end
 
+  add_index "bids", ["listing_id"], :name => "index_bids_on_listing_id"
+
   create_table "listings", :force => true do |t|
     t.integer  "owner_id"
     t.integer  "megatile_grouping_id"
@@ -38,6 +40,8 @@ ActiveRecord::Schema.define(:version => 20110405031152) do
     t.integer  "bid_id"
     t.integer  "lock_version",         :default => 0
   end
+
+  add_index "listings", ["owner_id"], :name => "index_listings_on_owner_id"
 
   create_table "megatile_grouping_megatiles", :force => true do |t|
     t.integer  "megatile_grouping_id"
@@ -60,6 +64,11 @@ ActiveRecord::Schema.define(:version => 20110405031152) do
     t.datetime "updated_at"
     t.integer  "lock_version", :default => 0
   end
+
+  add_index "megatiles", ["owner_id"], :name => "index_megatiles_on_owner_id"
+  add_index "megatiles", ["world_id"], :name => "index_megatiles_on_world_id"
+  add_index "megatiles", ["x"], :name => "index_megatiles_on_x"
+  add_index "megatiles", ["y"], :name => "index_megatiles_on_y"
 
   create_table "players", :force => true do |t|
     t.integer  "user_id"
@@ -84,6 +93,11 @@ ActiveRecord::Schema.define(:version => 20110405031152) do
     t.integer  "world_id"
     t.integer  "lock_version", :default => 0
   end
+
+  add_index "resource_tiles", ["megatile_id"], :name => "index_resource_tiles_on_megatile_id"
+  add_index "resource_tiles", ["world_id"], :name => "index_resource_tiles_on_world_id"
+  add_index "resource_tiles", ["x"], :name => "index_resource_tiles_on_x"
+  add_index "resource_tiles", ["y"], :name => "index_resource_tiles_on_y"
 
   create_table "users", :force => true do |t|
     t.string   "name"
