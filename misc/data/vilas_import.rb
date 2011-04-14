@@ -1,8 +1,8 @@
 require 'csv'
 
 def handle_row(row, indices, world)
-  x = row[ indices[:row] ].to_i
-  y = row[ indices[:col] ].to_i
+  x = row[ indices[:col] ].to_i
+  y = row[ indices[:row] ].to_i
   
   class_code = row[ indices[:cover_class] ].to_i
   if class_code == 255

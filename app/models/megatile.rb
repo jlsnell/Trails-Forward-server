@@ -70,6 +70,11 @@ class Megatile < ActiveRecord::Base
     return ret
   end
   
+  def estimated_value
+    0
+  end
+  
+  
   api_accessible :megatile_with_resources do |template|
     template.add :id
     template.add :x
