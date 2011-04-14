@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110413145750) do
+ActiveRecord::Schema.define(:version => 20110414135426) do
 
   create_table "bids", :force => true do |t|
     t.integer  "listing_id"
@@ -92,6 +92,7 @@ ActiveRecord::Schema.define(:version => 20110413145750) do
     t.datetime "updated_at"
     t.integer  "world_id"
     t.integer  "lock_version", :default => 0
+    t.integer  "density"
   end
 
   add_index "resource_tiles", ["megatile_id"], :name => "index_resource_tiles_on_megatile_id"

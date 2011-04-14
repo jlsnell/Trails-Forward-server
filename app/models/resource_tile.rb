@@ -5,10 +5,13 @@ class ResourceTile < ActiveRecord::Base
   belongs_to :megatile
   belongs_to :world
   
-  def clear_resources!
+  def clear_resources
     self.type = nil
     self.species = nil
     self.quality = nil
+  end
+  
+  def clear_resources!
     save!
   end
   

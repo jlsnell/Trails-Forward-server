@@ -1,0 +1,3 @@
+class FarmTile < ResourceTile
+  
+end
