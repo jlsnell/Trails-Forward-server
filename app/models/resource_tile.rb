@@ -21,6 +21,7 @@ class ResourceTile < ActiveRecord::Base
     template.add :y
     template.add :type
     template.add :species
+    template.add :density
     template.add :quality
     template.add :zoned_use
     template.add :updated_at
