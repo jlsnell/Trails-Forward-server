@@ -5,11 +5,18 @@ class MegatilesController < ApplicationController
   def index
     @world = World.find(params[:world_id])
     if params.has_key? :x_min
-      @megatiles = Megatile.where(:world_id => @world.id).where("x >= :x_min AND x<= :x_max AND y>=:y_min AND y<=:y_max", 
-       {:x_min => params[:x_min], :x_max => params[:x_max], :y_min => params[:y_min], :y_max => params[:y_max]})
-      if @megatiles.count > 1000
+      #if @megatiles.count * @world.megatile_width > 1000
+      x_min = params[:x_min].to_i
+      x_max = params[:x_max].to_i
+      y_min = params[:y_min].to_i
+      y_max = params[:y_max].to_i
+      
+      if (x_max - x_min)*(y_max - y_min) > 1000
         render :status => :forbidden
       end
+    
+      @megatiles = Megatile.where(:world_id => @world.id).where("x >= :x_min AND x<= :x_max AND y>=:y_min AND y<=:y_max", 
+       {:x_min => x_min, :x_max => x_max, :y_min => y_min, :y_max => y_max})
     else
       if @world.width * @world.height > 1000
         render :status => :forbidden
