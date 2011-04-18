@@ -8,6 +8,9 @@ class MegatilesController < ApplicationController
       @megatiles = Megatile.where(:world_id => @world.id).where("x >= :x_min AND x<= :x_max AND y>=:y_min AND y<=:y_max", 
        {:x_min => params[:x_min], :x_max => params[:x_max], :y_min => params[:y_min], :y_max => params[:y_max]})
     else
+      if @world.width * @world.height > 200
+        render :status => :forbidden
+      end
       @megatiles = @world.megatiles
     end
     respond_to do |format|
