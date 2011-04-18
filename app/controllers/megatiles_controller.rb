@@ -12,14 +12,14 @@ class MegatilesController < ApplicationController
       y_max = params[:y_max].to_i
       
       if (x_max - x_min)*(y_max - y_min) > 1000
-        render :status => :forbidden
+        render :status => :forbidden, :text => "Request too large"
       end
     
       @megatiles = Megatile.where(:world_id => @world.id).where("x >= :x_min AND x<= :x_max AND y>=:y_min AND y<=:y_max", 
        {:x_min => x_min, :x_max => x_max, :y_min => y_min, :y_max => y_max})
     else
       if @world.width * @world.height > 1000
-        render :status => :forbidden
+        render :status => :forbidden, :text => "Request too large"
       end
       @megatiles = @world.megatiles
     end
