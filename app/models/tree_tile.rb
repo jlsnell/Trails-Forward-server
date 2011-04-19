@@ -1,3 +1,0 @@
-class TreeTile < ResourceTile
-  
-end
