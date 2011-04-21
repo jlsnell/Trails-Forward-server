@@ -3,6 +3,7 @@ require 'csv'
 def handle_row(row, indices, world)
   x = row[ indices[:col] ].to_i
   y = row[ indices[:row] ].to_i
+  puts "Handling #{x}, #{y}"
   
   resource_tile = world.resource_tile_at x,y
   
