@@ -3,7 +3,7 @@ require 'csv'
 def handle_row(row, indices, world)
   x = row[ indices[:col] ].to_i
   y = row[ indices[:row] ].to_i
-  puts "Handling #{x}, #{y}"
+  print "Handling #{x}, #{y}:"
   
   resource_tile = world.resource_tile_at x,y
   
@@ -55,6 +55,7 @@ def handle_row(row, indices, world)
     when 255 #no data, lots of this at the edges, so let's just call it water... island county :-)
       resource_tile.type = WaterTile.to_s
     end #case
+    puts "#{resource_tile.type}"
   end #skip_version
 end
 
