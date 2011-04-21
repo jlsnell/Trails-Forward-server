@@ -3,7 +3,7 @@ require 'csv'
 def handle_row(row, indices, world)
   x = row[ indices[:col] ].to_i
   y = row[ indices[:row] ].to_i
-  print "Handling #{x}, #{y}:"
+  print "Handling #{x}, #{y}: "
   
   resource_tile = world.resource_tile_at x,y
   
@@ -30,6 +30,8 @@ def handle_row(row, indices, world)
       when 255 then nil
       else imperviousness.to_f/100.0
     end
+    
+    print "class_code=#{class_code} tree_density=#{resource_tile.tree_density} housing_density=#{resource_tile.housing_density} imperviousness=#{resource_tile.imperviousness} "
     
       
     case class_code  #most significant digit of class code
