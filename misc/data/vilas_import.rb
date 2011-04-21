@@ -4,100 +4,61 @@ def handle_row(row, indices, world)
   x = row[ indices[:col] ].to_i
   y = row[ indices[:row] ].to_i
   
-  class_code = row[ indices[:cover_class] ].to_i
-  if class_code == 255
-    #no data here, just leave it a null tile
-    return
-  else 
-    resource_tile = world.resource_tile_at x,y
+  resource_tile = world.resource_tile_at x,y
+  
+  resource_tile.skip_version! do #speed things up... since it's Genesis, we should't ever need to rollback
+    resource_tile.type = LandTile.to_s
     resource_tile.clear_resources
+    
+    class_code = row[ indices[:cover_class] ].to_i
+
+    tree_density = row[ indices[:forest_density] ].to_i
+    resource_tile.tree_density = case tree_density
+      when 255 then nil
+      else tree_density.to_f / 100.0
+    end  
+
+    devel_density = row[ indices[:devel_density] ].to_i
+    resource_tile.housing_density = case devel_density 
+      when 0,99,255 then 0
+      when 1..6 then (2**(devel_density+1))/128.0
+    end
+
+    imperviousness = row[ indices[:imperviousness] ].to_i
+    resource_tile.imperviousness = case imperviousness
+      when 255 then nil
+      else imperviousness.to_f/100.0
+    end
+    
+      
     case class_code  #most significant digit of class code
     when 11,95  #open water or emergent herbaceous wetlands
       resource_tile.type = WaterTile.to_s
     when 21..24 #developed
-      resource_tile.type = BuildingTile.to_s
-      devel_density = row[ indices[:devel_density] ].to_i
-      resource_tile.density = case devel_density 
-        when 0,99 then 0
-        when 1..6 then 2**devel_density
-      end
+      #resource_tile.primary_use = ???
+      resource_tile.zoned_use = "Development"
+      resource_tile.development_intensity = (class_code - 20)/4.0 
     when 41..71,90 #forest, scrub, herbaceous
-      resource_tile.type = TreeTile.to_s
-      resource_tile.density = row[ indices[:forest_density] ].to_i
-      resource_tile.species = case class_code
+      resource_tile.primary_use = "Forest"
+      resource_tile.tree_species = case class_code
         when 41 then "Deciduous"
         when 42 then "Coniferous"
         when 43 then "Mixed"
       end     
     when 81..82 #pasture or crops
-      resource_tile.type = FarmTile.to_s
-      resource_tile.species = case class_code
-        when 81 then "Pasture"
-        when 82 then "Cultivated Crops"
-      end 
-    end
-    resource_tile.save!
-  end 
+      resource_tile.primary_use = case class_code
+        when 81 then "Agriculture/Pasture"
+        when 82 then "Agriculture/Cultivated Crops"
+      end
+      resource_tile.zoned_use = "Agriculture"
+    when 255 #no data, lots of this at the edges, so let's just call it water... island county :-)
+      resource_tile.type = WaterTile.to_s
+    end #case
+  end #skip_version
 end
 
-
-world = World.create do |w|
-  w.name = "Vilas County, WI #{rand(100000)}"
-  w.year_start = 2000
-  w.year_current = 2001
-  w.width = 1353
-  w.height = 714
-  w.megatile_width = 3
-  w.megatile_height = 3
-end
-
-puts "Created '#{world.name}' with id #{world.id}"
-
-puts "Spawning empty tiles"
-world.spawn_tiles false #make true for debug output
-puts "\t...done"
-
-# how_many_trees = (world.width * world.height * 0.80).round
-# print "Placing  trees"
-# STDOUT.flush
-
-# how_many_trees.times do |i|
-#   x = rand world.width
-#   y = rand world.height
-#   resource_tile = world.resource_tile_at x,y
-#   resource_tile.type = 'TreeTile'
-#   resource_tile.quality = rand(40)
-#   resource_tile.save
-#   print '.'
-#   STDOUT.flush
-# end
-# puts ''
-
-puts "Creating users and players..."
-players = []
-player_types = [Lumberjack, Developer, Conserver]
-3.times do |i|
-  u = User.create :name => "User #{world.id}-#{i}"
-  p = player_types[i].create :user => u, :world => world, :balance => 1000
-  # p.type = player_types[i]
-  #   p.save
-  players << p
-  puts "\tPlayer id #{p.id} (#{p.type}) created"
-end
-
-# print "Assigning starter property"
-# ((world.width / 3) * (world.height / 3)).times do 
-#   x = rand world.width
-#   y = rand world.height
-#   megatile = world.megatile_at x,y
-#   megatile.owner = players[rand(players.size)]
-#   megatile.save
-#   print "."
-#   STDOUT.flush
-# end
-# puts ""
-
+world = World.find ARGV[0]
 reader = CSV.open("misc/data/vilas_conserv_game_spatial_1_acre_inputs.csv", "r")
 header = reader.shift
-indices = {:row => header.index("ROW"), :col => header.index("COL"), :cover_class => header.index("LANDCOV2001"), :devel_density => header.index("HDEN00"), :forest_density => header.index("CANOPY%2001")}
+indices = {:row => header.index("ROW"), :col => header.index("COL"), :cover_class => header.index("LANDCOV2001"), :imperviousness => header.index("IMPERV%2001") , :devel_density => header.index("HDEN00"), :forest_density => header.index("CANOPY%2001")}
 reader.each{|row| handle_row(row, indices, world)}
