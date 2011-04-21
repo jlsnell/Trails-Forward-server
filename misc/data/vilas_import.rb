@@ -5,7 +5,11 @@ def handle_row(row, indices, world)
   y = row[ indices[:row] ].to_i
   print "Handling #{x}, #{y}: "
   
+  possibly_dirty_water = false #is there a chance we'll need to do a second pass?
+  dirty_water = false #second pass needed if true
+
   resource_tile = world.resource_tile_at x,y
+  
   
   resource_tile.skip_version! do #speed things up... since it's Genesis, we should't ever need to rollback
     resource_tile.type = LandTile.to_s
@@ -40,31 +44,47 @@ def handle_row(row, indices, world)
         #not really open water, let's treat it as housing
         resource_tile.zoned_use = "Development"
         #resource_tile.primary_use = "Housing"
+        possibly_dirty_water = true
       else
         resource_tile.type = WaterTile.to_s         
       end
     when 21..24 #developed
       #resource_tile.primary_use = ???
       resource_tile.zoned_use = "Development"
-      resource_tile.development_intensity = (class_code - 20)/4.0 
+      resource_tile.development_intensity = (class_code - 20)/4.0
+      possibly_dirty_water = true 
     when 41..71,90 #forest, scrub, herbaceous
       resource_tile.primary_use = "Forest"
       resource_tile.tree_species = case class_code
         when 41 then "Deciduous"
         when 42 then "Coniferous"
         when 43 then "Mixed"
-      end     
+      end
+      possibly_dirty_water = true     
     when 81..82 #pasture or crops
       resource_tile.primary_use = case class_code
         when 81 then "Agriculture/Pasture"
         when 82 then "Agriculture/Cultivated Crops"
       end
       resource_tile.zoned_use = "Agriculture"
+      possibly_dirty_water = true
     when 255 #no data, lots of this at the edges, so let's just call it water... island county :-)
       resource_tile.type = WaterTile.to_s
     end #case
     puts "#{resource_tile.type}"
+    
+    if possibly_dirty_water and resource_tile.class == WaterTile
+      resource_tile.clear_resources
+      resource_tile.type = LandTile.to_s
+      dirty_water = true
+    end
+    
   end #skip_version
+  
+  if dirty_water #do a second pass
+    handle_row(row, indices, world)
+  end
+  
 end
 
 world = World.find ARGV[0]
