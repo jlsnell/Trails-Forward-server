@@ -14,19 +14,39 @@ puts "Spawning empty tiles"
 world.spawn_tiles true
 puts "\t...done"
 
-how_many_trees = (world.width * world.height * 0.80).round
-print "Placing  trees"
+how_many_trees = (world.width * world.height * 0.40).round
+print "Placing resources"
 STDOUT.flush
 
-how_many_trees.times do |i|
-  x = rand world.width
-  y = rand world.height
-  resource_tile = world.resource_tile_at x,y
-  resource_tile.type = 'TreeTile'
-  resource_tile.quality = rand(40)
-  resource_tile.save
-  print '.'
-  STDOUT.flush
+world.width.times do |x|
+  world.height.times do |y|
+    resource_tile = world.resource_tile_at x,y
+    resource_tile.type = 'LandTile'
+    case rand 9
+      when 0
+        resource_tile.clear_resources
+        resource_tile.type = 'WaterTile'
+      when 1..6
+        resource_tile.primary_use = nil
+        resource_tile.people_density = 0
+        resource_tile.housing_density = resource_tile.people_density
+        resource_tile.tree_density = 0.5 + rand()/2.0
+        resource_tile.tree_species = "Deciduous"
+        resource_tile.development_intensity = 0.0
+        resource_tile.zoned_use = "Logging" if (rand(10) == 0)
+      when 7..8
+        resource_tile.primary_use = "Residential"
+        resource_tile.zoned_use = "Development"
+        resource_tile.people_density = 0.5 + rand()/2.0
+        resource_tile.housing_density = resource_tile.people_density
+        resource_tile.tree_density = rand() * 0.1
+        resource_tile.tree_species = nil
+        resource_tile.development_intensity = resource_tile.housing_density
+    end
+    resource_tile.save
+    print '.'
+    STDOUT.flush
+  end
 end
 puts ''
 
@@ -43,7 +63,7 @@ player_types = [Lumberjack, Developer, Conserver]
 end
 
 print "Assigning starter property"
-((world.width / 3) * (world.height / 3)).times do 
+((world.width / 6) * (world.height / 6)).times do 
   x = rand world.width
   y = rand world.height
   megatile = world.megatile_at x,y

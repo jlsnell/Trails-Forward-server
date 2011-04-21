@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110414135426) do
+ActiveRecord::Schema.define(:version => 20110419155243) do
 
   create_table "bids", :force => true do |t|
     t.integer  "listing_id"
@@ -86,13 +86,16 @@ ActiveRecord::Schema.define(:version => 20110414135426) do
     t.integer  "y"
     t.string   "type"
     t.string   "zoned_use"
-    t.integer  "quality"
-    t.string   "species"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "world_id"
-    t.integer  "lock_version", :default => 0
-    t.integer  "density"
+    t.integer  "lock_version",          :default => 0
+    t.string   "primary_use"
+    t.float    "people_density"
+    t.float    "housing_density"
+    t.float    "tree_density"
+    t.string   "tree_species"
+    t.float    "development_intensity"
   end
 
   add_index "resource_tiles", ["megatile_id"], :name => "index_resource_tiles_on_megatile_id"
