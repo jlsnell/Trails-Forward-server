@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110419155243) do
+ActiveRecord::Schema.define(:version => 20110428193646) do
 
   create_table "bids", :force => true do |t|
     t.integer  "listing_id"
@@ -96,6 +96,7 @@ ActiveRecord::Schema.define(:version => 20110419155243) do
     t.float    "tree_density"
     t.string   "tree_species"
     t.float    "development_intensity"
+    t.float    "tree_size"
   end
 
   add_index "resource_tiles", ["megatile_id"], :name => "index_resource_tiles_on_megatile_id"

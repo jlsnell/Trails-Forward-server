@@ -15,6 +15,8 @@ gem 'acts_as_api', :git => 'git://github.com/fabrik42/acts_as_api.git'
 
 gem 'mysql'
 
+gem 'chunky_png'
+
 #gem 'builder'
 
 # Use unicorn as the web server
