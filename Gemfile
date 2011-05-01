@@ -19,6 +19,8 @@ gem 'chunky_png'
 
 gem 'narray'
 
+gem 'json'
+
 #gem 'builder'
 
 # Use unicorn as the web server
