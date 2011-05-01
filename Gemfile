@@ -17,6 +17,8 @@ gem 'mysql'
 
 gem 'chunky_png'
 
+gem 'narray'
+
 #gem 'builder'
 
 # Use unicorn as the web server

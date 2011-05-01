@@ -3,9 +3,10 @@ require 'chunky_png'
 world = World.find ARGV[0]
 canvas = ChunkyPNG::Image.new world.width, world.height, ChunkyPNG::Color::TRANSPARENT
 
-world.width.times do |x|
-  world.height.times do |y|
-    rt = world.resource_tile_at x,y
+ResourceTile.where(:world_id => world.id).find_in_batches do |group|
+  group.each do |rt|
+    x = rt.x
+    y = rt.y
     case rt.type
       when WaterTile.to_s
         canvas[x,y] = ChunkyPNG::Color :blue
