@@ -23,4 +23,5 @@ class Bid < ActiveRecord::Base
   def is_active?
     self.status == Verbiage[:active]
   end
+  
 end

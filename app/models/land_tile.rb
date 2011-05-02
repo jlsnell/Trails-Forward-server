@@ -15,6 +15,7 @@ class LandTile < ResourceTile
     template.add :housing_density
     template.add :tree_density
     template.add :tree_species
+    template.add :tree_size
     template.add :development_intensity
     template.add :imperviousness
   end
