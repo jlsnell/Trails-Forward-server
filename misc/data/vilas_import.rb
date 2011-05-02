@@ -43,7 +43,7 @@ def handle_row(row, indices, world)
       if resource_tile.housing_density > 0
         #not really open water, let's treat it as housing
         resource_tile.zoned_use = "Development"
-        #resource_tile.primary_use = "Housing"
+        resource_tile.primary_use = "Housing"
         possibly_dirty_water = true
       else
         resource_tile.type = WaterTile.to_s         
@@ -52,13 +52,19 @@ def handle_row(row, indices, world)
       #resource_tile.primary_use = ???
       resource_tile.zoned_use = "Development"
       resource_tile.development_intensity = (class_code - 20)/4.0
+      if (resource_tile.development_intensity >= 0.5 or resource_tile.imperviousness >= 0.5) and resource_tile.housing <= 0.75
+        resource_tile.primary_use = "Industry"
+      else
+        resource_tile.primary_use = "Housing"          
+      end
+      
       possibly_dirty_water = true 
     when 41..71,90 #forest, scrub, herbaceous
       resource_tile.primary_use = "Forest"
       resource_tile.tree_species = case class_code
-        when 41 then "Deciduous"
-        when 42 then "Coniferous"
-        when 43 then "Mixed"
+        when 41 then ResourceTile::Verbiage[:tree_species][:deciduous]
+        when 42 then ResourceTile::Verbiage[:tree_species][:coniferous]
+        when 43 then ResourceTile::Verbiage[:tree_species][:mixed]
       end
       possibly_dirty_water = true     
     when 81..82 #pasture or crops

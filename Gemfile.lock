@@ -51,6 +51,7 @@ GEM
     erubis (2.6.6)
       abstract (>= 1.0.0)
     i18n (0.5.0)
+    json (1.5.1)
     mail (2.2.15)
       activesupport (>= 2.3.6)
       i18n (>= 0.4.0)
@@ -58,6 +59,7 @@ GEM
       treetop (~> 1.4.8)
     mime-types (1.16)
     mysql (2.8.1)
+    narray (0.5.9.9)
     polyglot (0.3.1)
     rack (1.2.2)
     rack-mount (0.6.14)
@@ -90,7 +92,9 @@ PLATFORMS
 DEPENDENCIES
   acts_as_api!
   chunky_png
+  json
   mysql
+  narray
   rails (= 3.0.6)
   sqlite3
   vestal_versions!

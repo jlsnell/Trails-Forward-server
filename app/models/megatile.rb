@@ -8,6 +8,9 @@ class Megatile < ActiveRecord::Base
   
   has_many :megatile_grouping_megatiles
   has_many :megatile_groupings, :through => :megatile_grouping_megatiles
+  
+  validates_uniqueness_of :x, :scope => [:y, :world_id]
+  validates_uniqueness_of :y, :scope => [:x, :world_id]
     
   def width
     world.megatile_width
