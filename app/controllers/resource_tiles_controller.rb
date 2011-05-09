@@ -1,4 +1,7 @@
 class ResourceTilesController < ApplicationController
+  before_filter :authenticate_user!
+  
+
   # GET /resource_tiles
   # GET /resource_tiles.xml
   def index

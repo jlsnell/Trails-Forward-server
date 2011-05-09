@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   
-  #before_filter :authenticate_user!, :except => [:authenticate_for_token]
+  before_filter :authenticate_user!, :except => [:authenticate_for_token]
   
   # POST /users/authenticate_for_token
   def authenticate_for_token
