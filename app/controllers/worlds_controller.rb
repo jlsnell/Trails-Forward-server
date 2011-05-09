@@ -1,4 +1,7 @@
 class WorldsController < ApplicationController  
+  
+  before_filter :authenticate_user!
+  
   # GET /worlds
   # GET /worlds.xml
   def index
@@ -7,6 +10,7 @@ class WorldsController < ApplicationController
     respond_to do |format|
       format.xml  { render_for_api :world_without_tiles, :xml  => @worlds, :root => :worlds  }
       format.json { render_for_api :world_without_tiles, :json => @worlds, :root => :worlds  }
+      format.html
     end
   end
 
