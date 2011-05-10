@@ -52,7 +52,7 @@ def handle_row(row, indices, world)
       #resource_tile.primary_use = ???
       resource_tile.zoned_use = "Development"
       resource_tile.development_intensity = (class_code - 20)/4.0
-      if (resource_tile.development_intensity >= 0.5 or resource_tile.imperviousness >= 0.5) and resource_tile.housing <= 0.75
+      if (resource_tile.development_intensity >= 0.5 or resource_tile.imperviousness >= 0.5) and (resource_tile.housing_density == nil or resource_tile.housing_density <= 0.75)
         resource_tile.primary_use = "Industry"
       else
         resource_tile.primary_use = "Housing"          
