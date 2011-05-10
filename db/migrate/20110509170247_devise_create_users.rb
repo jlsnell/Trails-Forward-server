@@ -15,10 +15,10 @@ class DeviseCreateUsers < ActiveRecord::Migration
 
     end
     
-    adapter = User.connection.instance_variable_get("@config")[:adapter]
-    if adapter != "sqlite3"
-      add_index :users, :email,                :unique => true
-    end
+    #adapter = User.connection.instance_variable_get("@config")[:adapter]
+    #if adapter != "sqlite3"
+      add_index :users, :email #,                :unique => true
+    #end
     
     add_index :users, :reset_password_token, :unique => true
     # add_index :users, :confirmation_token,   :unique => true
