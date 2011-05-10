@@ -40,7 +40,7 @@ def handle_row(row, indices, world)
       
     case class_code  #most significant digit of class code
     when 11,95  #open water or emergent herbaceous wetlands
-      if resource_tile.housing_density > 0
+      if resource_tile.housing_density and resource_tile.housing_density > 0
         #not really open water, let's treat it as housing
         resource_tile.zoned_use = "Development"
         resource_tile.primary_use = "Housing"
