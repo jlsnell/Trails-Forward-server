@@ -5,31 +5,35 @@ gem 'rails', '3.0.7'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
-gem 'sqlite3'
+group :development, :test do
+	gem 'sqlite3'
+	
+	# To use debugger (ruby-debug for Ruby 1.8.7+, ruby-debug19 for Ruby 1.9.2+)
+	# gem 'ruby-debug'
+	gem 'ruby-debug19', :require => 'ruby-debug'
+	
+	# Deploy with Capistrano
+	# gem 'capistrano'
+	
+	gem 'cucumber-rails'
+    gem 'database_cleaner'
+	gem 'rspec'
+end
+
+group :production do
+	gem 'mysql'
+end
 
 gem 'vestal_versions', :git => 'git://github.com/adamcooper/vestal_versions'
-
 #gem 'vestal_versions', :git => 'git://github.com/carpodaster/vestal_versions.git'
 
 gem 'acts_as_api', :git => 'git://github.com/fabrik42/acts_as_api.git'
-
-gem 'mysql'
-
 gem 'chunky_png'
-
 gem 'narray'
-
 gem 'json'
-
 gem 'devise'
 
 
-# Deploy with Capistrano
-# gem 'capistrano'
-
-# To use debugger (ruby-debug for Ruby 1.8.7+, ruby-debug19 for Ruby 1.9.2+)
-# gem 'ruby-debug'
-gem 'ruby-debug19', :require => 'ruby-debug'
 
 # Bundle the extra gems:
 # gem 'bj'
