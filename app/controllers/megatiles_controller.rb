@@ -1,4 +1,5 @@
 class MegatilesController < ApplicationController
+  before_filter :authenticate_user!
     
   # GET /megatiles
   # GET /megatiles.xml

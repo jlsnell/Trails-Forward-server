@@ -27,6 +27,9 @@ TrailsForwardWorld::Application.configure do
   # Use a different cache store in production
   # config.cache_store = :mem_cache_store
 
+  config.action_mailer.default_url_options = { :host => 'tf.dev.mirerca.com' }
+
+
   # Disable Rails's static asset server
   # In production, Apache or nginx will already do this
   config.serve_static_assets = false

@@ -1,4 +1,21 @@
 class UsersController < ApplicationController
+  
+  before_filter :authenticate_user!, :except => [:authenticate_for_token]
+  
+  # POST /users/authenticate_for_token
+  def authenticate_for_token
+    @user = User.find_by_email params[:email]
+    if @user != nil and @user.valid_password? params[:password]
+      ret = {:id => @user.id, :auth_token => @user.authentication_token}
+      respond_to do |format|
+        format.json {render :json => ret }
+        format.xml  {render :xml => ret }
+      end
+    else
+      render :status => :forbidden
+    end
+  end
+  
   # GET /users
   # GET /users.xml
   def index
@@ -60,6 +77,7 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       if @user.update_attributes(params[:user])
+        @user.reset_authentication_token!
         format.html { redirect_to(@user, :notice => 'User was successfully updated.') }
         format.xml  { head :ok }
       else

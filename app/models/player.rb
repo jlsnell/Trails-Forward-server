@@ -6,6 +6,7 @@ class Player < ActiveRecord::Base
   has_many :resource_tiles, :through => :megatiles
   belongs_to :world
   belongs_to :user  
+  validates_presence_of :user
   
   api_accessible :id_and_name do |template|
     template.add :id

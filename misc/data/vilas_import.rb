@@ -25,7 +25,7 @@ def handle_row(row, indices, world)
 
     devel_density = row[ indices[:devel_density] ].to_i
     resource_tile.housing_density = case devel_density 
-      when 0,99,255 then 0
+      when 0,99,255 then nil
       when 1..6 then (2**(devel_density+1))/128.0
     end
 
@@ -40,7 +40,7 @@ def handle_row(row, indices, world)
       
     case class_code  #most significant digit of class code
     when 11,95  #open water or emergent herbaceous wetlands
-      if resource_tile.housing_density > 0
+      if resource_tile.housing_density and resource_tile.housing_density > 0
         #not really open water, let's treat it as housing
         resource_tile.zoned_use = "Development"
         resource_tile.primary_use = "Housing"
@@ -52,7 +52,7 @@ def handle_row(row, indices, world)
       #resource_tile.primary_use = ???
       resource_tile.zoned_use = "Development"
       resource_tile.development_intensity = (class_code - 20)/4.0
-      if (resource_tile.development_intensity >= 0.5 or resource_tile.imperviousness >= 0.5) and resource_tile.housing <= 0.75
+      if (resource_tile.development_intensity >= 0.5 or resource_tile.imperviousness >= 0.5) and (resource_tile.housing_density == nil or resource_tile.housing_density <= 0.75)
         resource_tile.primary_use = "Industry"
       else
         resource_tile.primary_use = "Housing"          

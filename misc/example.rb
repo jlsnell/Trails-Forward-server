@@ -54,7 +54,11 @@ puts "Creating users and players..."
 players = []
 player_types = [Lumberjack, Developer, Conserver]
 3.times do |i|
-  u = User.create :name => "User #{world.id}-#{i}"
+  password = "letmein"
+  email = "u#{world.id}-#{i}@example.com"
+  u = User.new(:email => email, :password => password, :password_confirmation => password)
+  u.name = "User #{world.id}-#{i}"
+  u.save!
   p = player_types[i].create :user => u, :world => world, :balance => 1000
   # p.type = player_types[i]
   #   p.save

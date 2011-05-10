@@ -5,9 +5,8 @@
     <th>Name</th>
     <th>Height</th>
     <th>Width</th>
-    <th>Tile width</th>
-    <th>Tile height</th>
-    <th></th>
+    <th>MegaTile width</th>
+    <th>MegaTile height</th>
     <th></th>
     <th></th>
   </tr>
@@ -17,10 +16,9 @@
     <td><%= world.name %></td>
     <td><%= world.height %></td>
     <td><%= world.width %></td>
-    <td><%= world.tile_width %></td>
-    <td><%= world.tile_height %></td>
+    <td><%= world.megatile_width %></td>
+    <td><%= world.megatile_height %></td>
     <td><%= link_to 'Show', world %></td>
-    <td><%= link_to 'Edit', edit_world_path(world) %></td>
     <td><%= link_to 'Destroy', world, :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
 <% end %>
@@ -28,4 +26,3 @@
 
 <br />
 
-<%= link_to 'New World', new_world_path %>
