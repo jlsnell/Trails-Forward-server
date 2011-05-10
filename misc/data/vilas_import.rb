@@ -25,7 +25,7 @@ def handle_row(row, indices, world)
 
     devel_density = row[ indices[:devel_density] ].to_i
     resource_tile.housing_density = case devel_density 
-      when 0,99,255 then 0
+      when 0,99,255 then nil
       when 1..6 then (2**(devel_density+1))/128.0
     end
 
