@@ -11,6 +11,8 @@ class Player < ActiveRecord::Base
   belongs_to :world
   belongs_to :user  
   validates_presence_of :user
+  validates_presence_of :world
+  validates_numericality_of :balance
   
   api_accessible :id_and_name do |template|
     template.add :id
@@ -27,4 +29,13 @@ class Player < ActiveRecord::Base
   api_accessible :player_private, :extend => :player_public do |template|
     template.add :balance
   end
+  
+  api_accessible :player_private_with_megatiles, :extend => :player_private do |template|
+    template.add :megatiles, :template => :id_and_name
+  end
+  
+  api_accessible :player_public_with_megatiles, :extend => :player_public do |template|
+    template.add :megatiles, :template => :id_and_name
+  end
+
 end

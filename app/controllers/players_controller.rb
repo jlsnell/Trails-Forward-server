@@ -29,9 +29,9 @@ class PlayersController < ApplicationController
     authorize! :show_player, @player
     
     if can? :access_private_data, @player
-      template_to_use = :player_private
+      template_to_use = :player_private_with_megatiles
     else
-      template_to_use = :player_public
+      template_to_use = :player_public_with_megatiles
     end
     
     respond_to do |format|
