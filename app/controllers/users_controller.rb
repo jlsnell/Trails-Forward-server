@@ -12,7 +12,7 @@ class UsersController < ApplicationController
         format.xml  {render :xml => ret }
       end
     else
-      render :nothing => :true, :status => :forbidden
+      render :nothing => true, :status => :forbidden
     end
   end
   
