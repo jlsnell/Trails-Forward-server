@@ -49,6 +49,7 @@ GEM
     arel (2.0.9)
     bcrypt-ruby (2.1.4)
     builder (2.1.2)
+    cancan (1.6.4)
     capybara (0.4.1.2)
       celerity (>= 0.7.9)
       culerity (>= 0.2.4)
@@ -166,6 +167,7 @@ PLATFORMS
 
 DEPENDENCIES
   acts_as_api!
+  cancan
   capybara
   chunky_png
   cucumber-rails

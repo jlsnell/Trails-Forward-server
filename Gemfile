@@ -34,6 +34,7 @@ gem 'chunky_png'
 gem 'narray'
 gem 'json'
 gem 'devise'
+gem 'cancan'
 
 
 
