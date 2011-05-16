@@ -1,5 +1,7 @@
 class Bid < ActiveRecord::Base
   versioned
+  acts_as_api
+  
   belongs_to :bidder, :class_name => 'Player'
   belongs_to :current_owner, :class_name => 'Player'
   belongs_to :listing
@@ -23,5 +25,22 @@ class Bid < ActiveRecord::Base
   def is_active?
     self.status == Verbiage[:active]
   end
+  
+  def is_counter_bid?
+    counter_to != nil
+  end
+  
+  api_accessible :bid_public do |template|
+    template.add :id
+    template.add :bidder, :template => :player_public
+    template.add :is_active?, :as => :active
+    template.add :updated_at
+  end
+  
+  api_accessible :bid_private, :extend => :bid_public do |template|
+    template.add :money
+    template.add :counter_to, :template => :bid_public, :if => :is_counter_bid?
+  end
+  
   
 end

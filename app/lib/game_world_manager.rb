@@ -4,13 +4,7 @@ class GameWorldManager
   attr_reader :world
   attr_reader :the_state
   attr_reader :broker
-  
-  def initialize(world)
-    @world = world
-    @the_state = TheState.new world
-    @broker = Broker.new world
-  end
-  
+    
   def self.for_world(world)
     #see end of this file
     GameWorldManagerFactory.instance.manager_for_world(world)
@@ -20,6 +14,12 @@ class GameWorldManager
     GameWorldManagerFactory.instance.manager_for_world_id(world_id)
   end
   
+  def initialize(world)
+    @world = world
+    @the_state = TheState.new world
+    @broker = Broker.new world
+  end
+    
 end
 
 

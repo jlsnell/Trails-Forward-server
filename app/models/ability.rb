@@ -11,6 +11,16 @@ class Ability
     can :index_user_players, :all
     can :show_player, :all
     
+    #users can only do things in worlds they inhabit
+    can :do_things, World do |world|
+      world.player_for_user(user)
+    end
+    
+    can :bid, Megatile do |megatile|
+      #the user doesn't already own the tile
+      (can? :do_things, megatile.world) and ( megatile.owner != megatile.world.player_for_user(user) )
+    end
+    
     # Define abilities for the passed in user here. For example:
     #
     #   user ||= User.new # guest user (not logged in)
