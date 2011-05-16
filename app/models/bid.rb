@@ -15,6 +15,11 @@ class Bid < ActiveRecord::Base
   #land that is being PURCHASED by the bidder. In the case of a fully solicited buy, this == listing.megatile_grouping.meagtiles
   belongs_to :requested_land, :class_name => "MegatileGrouping"
   
+  validates_presence_of :money
+  validates_numericality_of :money
+  validate :money_must_be_nonnegative
+  
+  
   Verbiage = {:active => "Offered",
               :offered => "Offered",
               :accepted => "Accepted",
@@ -28,6 +33,10 @@ class Bid < ActiveRecord::Base
   
   def is_counter_bid?
     counter_to != nil
+  end
+  
+  def money_must_be_nonnegative
+    errors.add(:money, "must be >= 0") unless (money >= 0) 
   end
   
   api_accessible :bid_public do |template|
