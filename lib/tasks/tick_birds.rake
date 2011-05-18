@@ -1,4 +1,5 @@
 require 'narray'
+require 'matrix_utils'
 
 namespace :trails_forward do
   namespace :birds do
@@ -14,6 +15,7 @@ namespace :trails_forward do
     task :tick_x, :world_id, :needs => [:environment, :get_species_data] do |cmd, args|
       Rake::Task['trails_forward:birds:get_species_data'].invoke(args[:world_id])
       puts "ticking x for #{@world.id}"
+      sayhello
     end
     
     # desc "Retrieve species distribution data"
@@ -52,3 +54,4 @@ namespace :trails_forward do
     
   end
 end
+
