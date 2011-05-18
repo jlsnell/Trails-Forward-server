@@ -1,64 +1,78 @@
 class PlayersController < ApplicationController
   before_filter :authenticate_user!
   
-  # GET /players
-  # GET /players.xml
+  # GET /users/:id/players
   def index
-    @players = Player.all
-
+    @user = User.find(params[:user_id])
+    @players = @user.players
+    
+    authorize! :index_user_players, @user
+    
+    if can? :access_private_data, @user
+      template_to_use = :player_private
+    else
+      template_to_use = :player_public
+    end
+    
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @players }
+      format.xml  { render_for_api template_to_use, :xml  => @players  }
+      format.json  { render_for_api template_to_use, :json  => @players  }
     end
   end
 
-  # GET /players/1
-  # GET /players/1.xml
+  # GET /users/:user_id/players/:id
   def show
-    @player = Player.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @player }
+    @user = User.find params[:user_id]
+    @player = @user.players.where(:id => params[:id]).first
+    
+    authorize! :show_player, @player
+    
+    if can? :access_private_data, @player
+      template_to_use = :player_private_with_megatiles
+    else
+      template_to_use = :player_public_with_megatiles
     end
-  end
-
-  # GET /players/new
-  # GET /players/new.xml
-  def new
-    @player = Player.new
-
+    
     respond_to do |format|
-      format.html # new.html.erb
-      format.xml  { render :xml => @player }
+      format.html # index.html.erb
+      format.xml  { render_for_api template_to_use, :xml  => @player  }
+      format.json  { render_for_api template_to_use, :json  => @player  }
     end
   end
 
   # GET /players/1/edit
   def edit
     @player = Player.find(params[:id])
+    authorize! :update_player, @player
   end
 
   # POST /players
-  # POST /players.xml
-  def create
-    @player = Player.new(params[:player])
 
-    respond_to do |format|
-      if @player.save
-        format.html { redirect_to(@player, :notice => 'Player was successfully created.') }
-        format.xml  { render :xml => @player, :status => :created, :location => @player }
-      else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @player.errors, :status => :unprocessable_entity }
-      end
-    end
-  end
+  # def create
+  #   @user = User.find params[:user_id]
+  #   authorize! :create_player, @user
+  #   
+  #   @player = Player.new(params[:player])
+  #   @player.user = @user
+  #   @player.balance = Player::DefaultBalance #in case people get clever
+  # 
+  #   respond_to do |format|
+  #     if @player.save
+  #       format.html { redirect_to(@player, :notice => 'Player was successfully created.') }
+  #       format.xml  { render :xml => @player, :status => :created, :location => @player }
+  #     else
+  #       format.html { render :action => "new" }
+  #       format.xml  { render :xml => @player.errors, :status => :unprocessable_entity }
+  #     end
+  #   end
+  # end
 
   # PUT /players/1
   # PUT /players/1.xml
   def update
     @player = Player.find(params[:id])
+    authorize! :update_player, @player
 
     respond_to do |format|
       if @player.update_attributes(params[:player])
@@ -75,6 +89,8 @@ class PlayersController < ApplicationController
   # DELETE /players/1.xml
   def destroy
     @player = Player.find(params[:id])
+    authorize! :destroy_player, @player
+    
     @player.destroy
 
     respond_to do |format|

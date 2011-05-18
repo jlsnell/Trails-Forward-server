@@ -73,7 +73,12 @@ class ExampleWorldBuilder
       u = User.new(:email => email, :password => password, :password_confirmation => password)
       u.name = "User #{world.id}-#{i}"
       u.save!
-      p = player_types[i].create :user => u, :world => world, :balance => 1000
+      p = player_types[i].new do |p|
+        p.user = u
+        p.world = world
+        p.balance = Player::DefaultBalance
+      end
+      p.save!
       # p.type = player_types[i]
       #   p.save
       players << p

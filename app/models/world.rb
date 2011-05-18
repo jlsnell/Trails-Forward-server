@@ -53,6 +53,10 @@ class World < ActiveRecord::Base
     GameWorldManager.for_world(self)
   end
   
+  def player_for_user(user)
+    players.where(:user_id => user.id).first
+  end
+  
   api_accessible :world_without_tiles do |template|
     template.add :id
     template.add :name

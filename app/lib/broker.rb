@@ -13,7 +13,7 @@ class Broker
   end
   
   def execute_sale(bid)
-    raise "Can't process a sale for an unaccepted bid" unless bid.status == "Accepted"
+    raise "Can't process a sale for an unaccepted bid" unless bid.status == Bid::Verbiage[:accepted]
         
     ActiveRecord::Base.transaction do   
       lock_assets_for_bid bid 
@@ -89,7 +89,7 @@ class Broker
     
   end
 
-  def lock_assets_for_bid
+  def lock_assets_for_bid(bid)
     world = bid.bidder.world.lock! 
     
     #If the above really slows things down, then we can tack on:

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-require Rails.root.join("misc/example_world_builder")
+require Rails.root.join("lib/example_world_builder")
 
 describe World do
   context "when first created" do

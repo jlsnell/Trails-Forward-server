@@ -4,12 +4,17 @@ TrailsForwardWorld::Application.routes.draw do
   match "/users/authenticate_for_token" => "users#authenticate_for_token"
   
   resources :users do
-    resources :players, :only => [:index, :show]
+    resources :players, :only => [:index, :show, :update, :edit, :destroy]
   end
 
   resources :worlds, :only => [:index, :show] do
     resources :players, :only => [:index, :show]
     resources :megatiles, :only => [:index, :show] do
+      resources :bids, :except => [:destroy, :update] do
+        post 'accept'
+        post 'reject'
+        post 'cancel'
+      end
       resources :resource_tiles, :only => [:index, :show]
     end
   end
