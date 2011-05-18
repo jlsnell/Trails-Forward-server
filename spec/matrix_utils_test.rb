@@ -16,24 +16,24 @@ class Matrix_utils_test
   
   #tests the newer version of bwcc
   def test_New(testMatrix)
-    output = bwccN(testMatrix)
+    output = bwcc_New(testMatrix)
     return output
   end
   
   #Tests the label matrix generator
   def test_Label(testMatrix)
-    outputMatrix = bwccL(testMatrix)
+    outputMatrix = bwcc_Label(testMatrix)
     return outputMatrix
   end
   
   #Tests the perimeter matrix generator
   def test_Perimeter(testMatrix)
-    outputMatrix = bwccP(testMatrix)
+    outputMatrix = bwcc_Perimeter(testMatrix)
     return outputMatrix
   end
   
   def test_Chickadee(testMatrix)
-    tempOutput = bwccN(testMatrix)
+    tempOutput = bwcc_New(testMatrix)
     width = testMatrix.shape[0]
     height = testMatrix.shape[1]
     outputMatrix = NArray.byte(width,height)
@@ -54,8 +54,8 @@ class Matrix_utils_test
   end
   
   def test_Warbler(testMatrix)
-    tempOutput = bwccN(testMatrix)
-    perimOutput = bwccP(testMatrix)
+    tempOutput = bwcc_New(testMatrix)
+    perimOutput = bwcc_Perimeter(testMatrix)
     width = testMatrix.shape[0]
     height = testMatrix.shape[1]
     outputMatrix = NArray.byte(width,height)
