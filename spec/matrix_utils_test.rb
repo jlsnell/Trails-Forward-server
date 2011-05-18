@@ -8,28 +8,31 @@ BirdOutput = Struct.new(:outputMatrix, :count)
 
 class Matrix_utils_test
   
-  
+  #tests bwcc
   def test(testMatrix)
     outputMatrix = bwcc(testMatrix)
     return outputMatrix
   end
   
-  def testN(testMatrix)
+  #tests the newer version of bwcc
+  def test_New(testMatrix)
     output = bwccN(testMatrix)
     return output
   end
   
-  def testL(testMatrix)
+  #Tests the label matrix generator
+  def test_Label(testMatrix)
     outputMatrix = bwccL(testMatrix)
     return outputMatrix
   end
   
-  def testP(testMatrix)
+  #Tests the perimeter matrix generator
+  def test_Perimeter(testMatrix)
     outputMatrix = bwccP(testMatrix)
     return outputMatrix
   end
   
-  def testC(testMatrix)
+  def test_Chickadee(testMatrix)
     tempOutput = bwccN(testMatrix)
     width = testMatrix.shape[0]
     height = testMatrix.shape[1]
@@ -50,7 +53,7 @@ class Matrix_utils_test
     return output
   end
   
-  def testW(testMatrix)
+  def test_Warbler(testMatrix)
     tempOutput = bwccN(testMatrix)
     perimOutput = bwccP(testMatrix)
     width = testMatrix.shape[0]
