@@ -13,3 +13,9 @@ Given /^I have an owned megatile in the world$/ do
   @owned_megatile.owner = @world.players.where('id <> ?', @player.id).first #anybody but me
   @owned_megatile.save!  
 end
+
+Given /^I own a megatile in the world$/ do
+  @my_megatile = @world.megatiles.where(:owner_id => nil).last
+  @my_megatile.owner = @player
+  @my_megatile.save!
+end

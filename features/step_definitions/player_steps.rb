@@ -5,4 +5,5 @@ Given /^I have a player in the world$/ do
     p.balance = Player::DefaultBalance
   end
   @player.save!
+  @player_initial_balance = @player.balance
 end

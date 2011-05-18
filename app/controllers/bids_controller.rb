@@ -5,7 +5,7 @@ class BidsController < ApplicationController
     @megatile = Megatile.find(params[:megatile_id])
     @world = @megatile.world
     @player = @world.player_for_user current_user
-    
+        
     authorize! :bid, @megatile
 
     @megatile_grouping = MegatileGrouping.create
@@ -31,4 +31,38 @@ class BidsController < ApplicationController
       @megatile_grouping.destroy
     end #if bid.save
   end #create
+  
+  def index
+    @megatile = Megatile.find(params[:megatile_id])
+    @world = @megatile.world
+    @player = @world.player_for_user current_user
+    
+    authorize! :see_bids, @megatile
+    @bids = @megatile.bids_on.to_a
+    
+    respond_to do |format|
+      format.json  { render_for_api :bid_private, :json => @bids, :root => :bids  }
+      format.xml  { render_for_api :bid_private, :xml  => @bids, :root => :bids  }
+    end
+  end
+  
+  def accept
+    @bid = Bid.find(params[:bid_id])
+    @megatile = Megatile.find(params[:megatile_id])
+    @world = @megatile.world
+    @player = @world.player_for_user current_user
+    
+    authorize! :accept_bid, @bid
+    
+    @bid.status = Bid::Verbiage[:accepted]
+    @bid.save!
+    @world.manager.broker.execute_sale(@bid)
+    
+    respond_to do |format|
+      format.json  { render_for_api :bid_private, :json => @bid, :root => :bids  }
+      format.xml  { render_for_api :bid_private, :xml  => @bid, :root => :bids  }
+    end
+    
+  end
+
 end #BidsController

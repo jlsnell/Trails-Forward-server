@@ -21,6 +21,17 @@ class Ability
       (can? :do_things, megatile.world) and ( megatile.owner != megatile.world.player_for_user(user) )
     end
     
+    can :see_bids, Megatile do |megatile|
+      (megatile.world.player_for_user(user) == megatile.owner) or (megatile.owner == nil)
+    end
+    
+    can :accept_bid, Bid do |bid|
+      #assumes that all requested land in the bid has the same owner
+      megatiles = bid.requested_land.megatiles
+      megatile = megatiles.first
+      megatile.world.player_for_user(user) == megatile.owner 
+    end
+    
     # Define abilities for the passed in user here. For example:
     #
     #   user ||= User.new # guest user (not logged in)

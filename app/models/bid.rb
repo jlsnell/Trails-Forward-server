@@ -1,3 +1,5 @@
+require 'set'
+
 class Bid < ActiveRecord::Base
   versioned
   acts_as_api
@@ -17,7 +19,8 @@ class Bid < ActiveRecord::Base
   
   validates_presence_of :money
   validates_numericality_of :money
-  validate :money_must_be_nonnegative
+  validates :money, :numericality => {:greater_than_or_equal_to => 0}
+  validate :requested_land_must_all_have_same_owner
   
   
   Verbiage = {:active => "Offered",
@@ -26,6 +29,18 @@ class Bid < ActiveRecord::Base
               :rejected => "Rejected",
               :cancelled => "Cancelled"
   }
+  
+  def requested_land_must_all_have_same_owner
+    owners = Set.new
+    
+    requested_land.megatiles.each do |mt|
+      owners << mt.owner
+    end
+    
+    if owners.count > 1
+      errors.add(:requested_land, "must all have the same current owner")
+    end
+  end
   
   def is_active?
     self.status == Verbiage[:active]
@@ -42,8 +57,8 @@ class Bid < ActiveRecord::Base
   api_accessible :bid_public do |template|
     template.add :id
     template.add :bidder, :template => :player_public
-    template.add :is_active?, :as => :active
     template.add :updated_at
+    template.add :status
   end
   
   api_accessible :bid_private, :extend => :bid_public do |template|
