@@ -1,0 +1,286 @@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%Code to assign starting DBH(i.e. tree size)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+n=5;  %%%%%%%% landscape size
+LS=zeros(n,n); %%%%%%%make empty landscape
+Decid=zeros(n,n); %%%%%%Decidous forest
+Conifer=zeros(n,n);%%%%%Conifer forest
+Mixed=zeros(n,n);%%%%Mixed forest
+Ldecid=zeros(n,n); %%%Large trees in decidous forest
+Lconifer=zeros(n,n);%%%%%%Large trees conifers forest
+Lmixed=zeros(n,n); %%%%%Large trees in mixed forest
+%%%%%%%%%%populate landscape with one of 3 forest classes and weater(we will do this
+%%%%%%%%%%with real data in the game$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+for j=1:n
+    
+ls=randsample(4,n,true); %%% populate landscape with random integers 1,2,or 3;
+LS(:,j)=ls;  %%%%%%LS is the landscape composistion 1=decid, 2=conifer, 3=mixed
+end;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%assign size to each cell according to emperical distribution of acres
+%%%%%in each size class%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+treesize=[10,8,5]; %%% 10=large 8=medium 5=small
+largesize=[0,2,4,6,8,10,15,20];%% what is added to 10 inch trees
+for j=1:n
+decid=randsample(treesize,n,true,[0.431943972,0.369903847,0.198152181]);%%%Matrix of size large medium small decidous. Numbers are estiamted percent in each class from FIA data
+conifer=randsample(treesize,n,true,[0.556035896, 0.258728096,0.185236008]);%%% matrix of % size large, meadium small conifer. Numbers are estiamted percent in each class from FIA data
+mixed=randsample(treesize,n,true,[0.424745355,	0.350450241,	0.224804403]);%%% matrix of % size large, meadium small mixed. Numbers are estiamted percent in each class from FIA data
+
+largedecid=randsample(largesize,n,true,[0.473433437,0.271229523,0.127051152,0.068338135,0.029715297,0.011826016,0.01840644,0]);%%%Matrix of size large decidous. Numbers are estiamted percent in each class from FIA data
+largeconifer=randsample(largesize,n,true,[0.372470808,0.216336587,0.104601339,0.107220868,0.063811891,0.053101396,0.079521954,0.002935158]);%%%Matrix of large conifer. Numbers are estiamted percent in each class from FIA data
+largemixed=randsample(largesize,n,true,[0.369033307,0.232593812,0.114078886,0.10555826,0.061401365,	0.046739204,0.068313732,0.002281434]);%%%Matrix of large mixed. Numbers are estiamted percent in each class from FIA data
+
+Ldecid(:,j)=largedecid;
+Lconifer(:,j)=largeconifer;
+Lmixed(:,j)=largemixed;
+Decid(:,j)=decid;  %%%%Decidous tree size
+Conifer(:,j)=conifer;%%%%Conifer tree size
+Mixed(:,j)=mixed;%%%%Mixed tree size
+
+end;
+
+decid=LS==1; %%%is cell decidous? yes=1
+conifer=LS==2;%%%is cell conifer? yes=1
+mixed=LS==3;%%%is cell mixed? yes=1
+water=LS==4;%%%is cell water? yes=1
+
+Decid=Decid.*decid; %%%%%%%%%Decidous landscape with size
+Conifer=Conifer.*conifer;%%%%%%%%%%Conifer landscape with size
+Mixed=Mixed.*mixed; %%%%%%%%%%%Mixed landscape with size
+
+dbig=Decid==10; %%large diameter decid
+cbig=Conifer==10;%%large diameter conifer
+mbig=Mixed==10;%%large diameter mbig
+
+Ldecid=(dbig.*Ldecid);%%%%%%%%%% Large distribution
+Lconifer=cbig.*Lconifer;%%%%%%%%%% Large distribution
+Lmixed=mbig.*Lmixed;%%%%%%%%%% Large distribution
+
+Decid=Decid+Ldecid;  %%%Size (DBH) of of all Decidous cells
+Conifer=Conifer+Lconifer;%%%Size (DBH) of of all Conifer cells
+Mixed=Mixed+Lmixed;%%%Size (DBH) of of all mixed cells
+
+
+%%%%%Set number of trees per cell%%%%%%%%%% Numbers from FIA data 
+DenseDS=(Decid<8&Decid>=5)*350;  %%%Density of small trees decid
+DenseDM=(Decid<10&Decid>=8)*167; %%%Density of medium trees decid
+DenseDL=(Decid>=10)*133; %%%%%%Density of large trees decid
+
+DenseCS=(Conifer<8&Decid>=5)*303;%%%Density of small trees conifer
+DenseCM=(Conifer<10&Decid>=8)*139;%%%%%%Density of medium trees conifer
+DenseCL=(Conifer>=10)*97; %%%%%%Density of large trees conifer
+
+DenseMS=(Mixed<8&Mixed>=5)*235;%%%Density of small trees mixed
+DenseMM=(Mixed<10&Mixed>=8)*156;%%%%%%%Density of medium trees mixed
+DenseML=(Mixed>=10)*141; %%%%%%%Density of large trees mixed
+
+DenseD=DenseDS+DenseDM+DenseDL; %%%%Landscape of Decid trees
+DenseC=DenseCS+DenseCM+DenseCL; %%%%Landscape of Conifer trees
+DenseM=DenseMS+DenseMM+DenseML;%%%%%%%Landscape of Mixed trees
+
+%%%%%%%%%%%%%%%%Estimate Board Feet Per Tree
+BFD=exp(log(Decid)*2.77922-2.70244+.008);%%%%%%Board Feet per tree Decid
+BFC=exp(log(Conifer)*2.77922-2.70244+.1689889);%%%%%%Board Feet per tree Conifer
+BFM=exp(log(Mixed)*2.77922-2.70244);%%%%%%Board Feet per tree Mixed
+
+%%%%%%%%%%%%Estimate total board feet per cell
+
+BFDT=BFD.*DenseD;
+BFCT=BFC.*DenseC;
+BFMT=BFM.*DenseM;
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%Code to estimate bird habitat%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%Black-Billed Cuckooo%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+BBC=(decid+conifer+mixed); %%%Make landscape that is not water
+BBC=bwconncomp(BBC,4);%%%%%%%find edge of this landscape
+bbcstats=regionprops(BBC,'Area');%%%find the area
+idBBC=find([bbcstats.Area]>1);%%%see if area exist
+BBC2=ismember(labelmatrix(BBC),idBBC);%%%label matrix of BBC2
+BBC=bwperim(BBC2);%%find paramters
+BBC3=(decid+mixed);%%%%make landscape of just suitable habitat
+BBC=BBC3==1&BBC==1; %%%%%%suitable habitat + Parameter
+BBCsize=sum(BBC);
+BBCsize=sum(BBCsize,2);  %%%%%%%%%%%amount of habitat for BBC
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%The Least Flycatcher%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+LF=(decid+mixed); %%%flycatchers can live in decid and mixed forest
+LF=bwconncomp(LF,4);%%%%%%%%%%Designate patches
+lfstats=regionprops(LF,'Area'); %%calcualte size of patches
+idLF = find([lfstats.Area] > 0);%%%%%%%%%%%%select patches greater than a given size
+LF2 = ismember(labelmatrix(LF), idLF);%%%%%%%%%%%put those on a new matrix
+PLF2=bwperim(LF2);%%%%%%%%%%%%%%Take off parameters 
+LF= PLF2==0 & LF2==1;%%%%Core area for Flycatcher
+LFsize=sum(LF);
+LFsize=sum(LFsize); %%%%%%Amount of flycatcher forest
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%The wood thrush%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+WT=LF; %%%%%%%wood thursh has same properties as Flycather but bigger minimum size
+WT=bwconncomp(WT,4);%%designate patches
+wfstats=regionprops(WT,'Area'); %%calcualte size of patches
+idWT = find([wfstats.Area] > 2);%%%%%%%%%%%%select patches greater than 2 acres needed as minimum core patch size
+WT = ismember(labelmatrix(WT), idWT);%%%%%%%%%%%put those on a new matrix
+WTsize=sum(WT);
+WTsize=sum(WTsize);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%Boreal Chickadeee
+
+C=bwconncomp(Conifer,4);%%%%%%create patches for Conifer
+cstats=regionprops(C,'Area');%%%%%Measure of patch area conifer
+idC = find([cstats.Area] > 5);%%%%%%%%%%%%select patches greater than 5 acres
+C2 = ismember(labelmatrix(C), idC);%%%%%%%%%%%put those on a new matrix
+BC=C2;
+BCsize=sum(C2);
+BCsize=sum(BCsize); %%% Amout of land with Chickadees on it
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%Canada Warbler%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+CW=conifer+mixed;%%%%%%%%%CW uses mixed and conifer 
+CW=bwconncomp(CW,4);%%%%%%%%%%Designate patches
+cwstats=regionprops(CW,'Area'); %%calcualte size of patches
+idCW = find([cwstats.Area] > 0);%%%%%%%%%%%%select patches greater than a given size
+CW2 = ismember(labelmatrix(CW), idCW);%%%%%%%%%%%put those on a new matrix
+PCW2=bwperim(CW2);%%%%%%%%%%%%%%Take off parameters 
+CW= PCW2==0 & CW2==1;%%%%Core area for Flycatcher
+CWsize=sum(CW);
+CWsize=sum(CWsize); %%%%%%Amount of flycatcher forest
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%Time step%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%loop through and estimate for each cell incremental growth in DBH
+%%%%%Loop is used as 0 values go to infinity otherwise - there is probably
+%%%%%a much better way to do this. Values are estiamted values of PRI
+TDENSD=[];
+TDENSM=[];
+TDENSC=[];
+TBFDT=[];
+TMBFDT=[];
+TCBFDT=[];
+
+for T=1:35;
+    
+
+for j=1:n
+for q=1:n
+    if Decid(j,q)==0
+        Decid(j,q)==0;
+    else
+Decid(j,q)=2.7072.*Decid(j,q).^-.5431.*.97829.^Decid(j,q)+Decid(j,q); %%%%incremental gain in dbh Decid
+BFD=exp(log(Decid)*2.77922-2.70244+.008);%%%%%%Board Feet per tree Decid
+DenseD(j,q)=(1-(.03336-.0018*Decid(j,q)-.00018*Decid(j,q)+.0001*(Decid(j,q)^2)))*DenseD(q,j);%%%Tree density update due to mortality
+    end
+end
+end
+
+for j=1:n
+for q=1:n
+    if Conifer(j,q)==0
+        Conifer(j,q)==0;
+    else
+Conifer(j,q)=2.980519.*Conifer(j,q).^-.53609.*.96803.^Conifer(j,q)+Conifer(j,q);%%%%%incremental gain in dbh Cprams
+   BFC=exp(log(Conifer)*2.77922-2.70244+.008);%%%%%%Board Feet per tree conifer
+DenseC(j,q)=(1-(.03336-.0018*Conifer(j,q)-.00018*Conifer(j,q)+.0001*(Conifer(j,q)^2)))*DenseC(q,j);%%%Tree density update due to mortality
+    end
+end
+end
+for j=1:n
+for q=1:n
+    if Mixed(j,q)==0
+        Mixed(j,q)==0;
+    else
+Mixed(j,q)=2.844009.*Mixed(j,q).^-.543955.*.97316.^Mixed(j,q)+Mixed(j,q);%%%%%%% incrmental gain in Mixed
+BFD=exp(log(Decid)*2.77922-2.70244+.008);%%%%%%Board Feet per tree mixed
+DenseM(j,q)=(1-(.03336-.0018*Mixed(j,q)-.00018*Mixed(j,q)+.0001*(Mixed(j,q)^2)))*DenseM(q,j);%%%Tree density update due to mortality
+    end
+end
+end
+
+%%%%%%%%%%%%%%%%Estimate Board Feet Per Tree
+dbig=Decid>10; %%%%Are trees big enough to be sawlogs
+cbig=Conifer>10;%%%%Are trees big enough to be sawlogs
+mbig=Mixed>10;%%%%Are trees big enough to be sawlogs
+
+BFD=exp(log(Decid.*dbig)*2.77922-2.70244+.008);%%%%%%Board Feet per tree Decid
+BFC=exp(log(Conifer.*cbig)*2.77922-2.70244+.1689889);%%%%%%Board Feet per tree Conifer
+BFM=exp(log(Mixed.*mbig)*2.77922-2.70244);%%%%%%Board Feet per tree Mixed
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%Estimate cordwood%%%%%%%%%%%%%%%%%%%%%%
+dsmall=Decid<10&Decid>0; %%%%Are trees big enough to be sawlogs
+csmall=Conifer<10&Conifer>0;%%%%Are trees big enough to be sawlogs
+msmall=Mixed<10&Mixed>0;%%%%Are trees big enough to be sawlogs
+
+CD=(-.08+.0175.*Decid).*dsmall; %%%%%%%%%%Decid cordwood
+CC=(-.08+.0175.*Conifer).*csmall;%%%%%%%%%%Conifer cordwood
+CM=(-.08+.0175.*Mixed).*msmall;%%%%%%%%%%%Mixed Cordwood
+%%%%%%%%%%%%Estimate total board feet per cell
+BFDT=BFD.*DenseD.*dbig; %%%%%%%%%%%Boardfeet Decid
+BFCT=BFC.*DenseC.*cbig;%%%%%%Boardfeet Conifer
+BFMT=BFM.*DenseM.*mbig;%%%%%%%%%%%Boardfeet mixed
+%%%%%%%%%%%%%%%%%%
+%%%Estimate total chords per cell
+
+CFDT=CD.*DenseD.*dsmall; %%%%%% cords in cell decid
+CFCT=CC.*DenseC.*csmall;%%%%%%%cords in cell conifer
+CFMT=CM.*DenseM.*msmall;%%%%%%%%%cords in cell mixed
+%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%Estimate Sawwood Value%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+DecidSawValue=BFDT/1000*125; %%%%%decid value
+ConiferSawValue=BFCT/1000*135;%%%conifer value
+MixedSawValue=BFMT/1000*130;%%%%Mixed value
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%Estimate of cordwood value%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+DecidCordValue=CFDT.*30; %%%%%decid cordvalue
+ConiferCordValue=CFCT.*35;%%%%%%conifer cordvalue
+MixedCordValue=CFMT.*33;%%%%%%%%mixed cordvalue
+
+
+TDENSD=[TDENSD, DenseD];
+TDENSC=[TDENSC, DenseC];
+TDENSM=[TDENSM, DenseM];
+
+TBFDT=[TBFDT,BFDT];
+TMBFDT=[TMBFDT,BFDT];
+TCBFDT=[TCBFDT,BFDT];
+
+
+
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%Estimate Sawood Value%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+DecidSawValue=BFDT/1000*125; %%%%%decid value
+ConiferSawValue=BFCT/1000*135;%%%conifer value
+MixedSawValue=BFMT/1000*130;%%%%Mixed value
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%Estimate of cordwood value%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+DecidCordValue=CFDT.*30; %%%%%decid cordvalue
+ConiferCordValue=CFCT.*35;%%%%%%conifer cordvalue
+MixedCordValue=CFMT.*33;%%%%%%%%mixed cordvalue
+
+
+thing;
