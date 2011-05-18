@@ -51,3 +51,50 @@ Then /^I should not get a bid id$/ do
   data = ActiveSupport::JSON.decode(@response.body)
   data.has_key?("bid").should_not be true
 end
+
+
+When /^I accept the highest dollar bid on that megatile$/ do
+  bidsdata = ActiveSupport::JSON.decode(@response.body)
+  
+  highest_bid = bidsdata["bids"].first
+  
+  bidsdata["bids"].each do |biddata|
+    if biddata["money"].to_i > highest_bid["money"].to_i
+      highest_bid = biddata
+    end
+  end  
+  
+  @winning_bid = Bid.find(highest_bid["id"])
+  
+  @response = post world_megatile_bid_accept_path(@world, @my_megatile, @winning_bid),
+                :format => :json, 
+                :auth_token => @user.authentication_token
+  @response.status.should be 200
+end
+
+Then /^the bidder should own the megatile$/ do
+  @my_megatile.reload
+  @my_megatile.owner.should_not == @player
+  @my_megatile.owner.should == @other_player
+end
+
+Then /^my balance should increase by the amount of the bid$/ do
+  @player.reload
+  (@winning_bid.money + @player_initial_balance).should == @player.balance
+end
+
+Then /^The megatile's owner should get an email notification of the bid$/ do
+  pending # express the regexp above with the code you wish you had
+end
+
+Then /^the bidder should get an email notification of the bids acceptance$/ do
+  pending # express the regexp above with the code you wish you had
+end
+
+Then /^losing bids should be rejected$/ do
+  pending # express the regexp above with the code you wish you had
+end
+
+Then /^the losing bidders should be notified$/ do
+  pending # express the regexp above with the code you wish you had
+end
