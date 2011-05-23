@@ -2,6 +2,15 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
+    
+    can :index_worlds, World do
+      true
+    end
+    
+    can :show_world, World do
+      true
+    end
+    
     can :access_private_data, Player, :user_id => user.id
     can :access_private_data, User, :id => user.id
     
@@ -14,6 +23,18 @@ class Ability
     #users can only do things in worlds they inhabit
     can :do_things, World do |world|
       world.player_for_user(user)
+    end
+    
+    can :index_listings, World do |world|
+      can? :do_things, world
+    end
+    
+    can :list_megatiles_for_sale, World do |world|
+      can? :do_things, world
+    end
+    
+    can :list_for_sale, Megatile do |megatile|
+      megatile.world.player_for_user(user) == megatile.owner
     end
     
     can :bid, Megatile do |megatile|

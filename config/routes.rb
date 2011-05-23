@@ -12,6 +12,11 @@ TrailsForwardWorld::Application.routes.draw do
       get :bids_placed
       get :bids_received
     end
+    resources :listings, :only => [:index, :create, :show] do
+      collection do
+        get 'active', :controller => :listings, :action => :index_active
+      end
+    end
     resources :megatiles, :only => [:index, :show] do
       resources :listings, :except => [:destroy, :update]
       resources :bids, :except => [:destroy, :update] do

@@ -29,7 +29,7 @@ class Bid < ActiveRecord::Base
   validates :money, :numericality => {:greater_than_or_equal_to => 0}
   validate :requested_land_must_all_have_same_owner
   
-  named_scope :active, :conditions => { :status => Verbiage[:active] }
+  scope :active, lambda { where(:status => Verbiage[:active]) }
   
 
   
@@ -67,6 +67,8 @@ class Bid < ActiveRecord::Base
   api_accessible :bid_private, :extend => :bid_public do |template|
     template.add :money
     template.add :counter_to, :template => :bid_public, :if => :is_counter_bid?
+    template.add 'offered_land.megatiles', :as => :offered_land, :template => :id_and_name, :if => lambda{|b| b.offered_land != nil}
+    template.add 'requested_land.megatiles', :as => :requested_land, :template => :id_and_name, :if => lambda{|b| b.requested_land != nil}
   end
   
   

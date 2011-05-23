@@ -6,6 +6,7 @@ class World < ActiveRecord::Base
   has_many :megatiles
   has_many :resource_tiles
   has_many :players
+  has_many :listings
   
   validates :height, :numericality => {:greater_than => 0}
   validates :width, :numericality => {:greater_than => 0}
