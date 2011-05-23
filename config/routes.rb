@@ -8,14 +8,22 @@ TrailsForwardWorld::Application.routes.draw do
   end
 
   resources :worlds, :only => [:index, :show] do
-    resources :players, :only => [:index, :show]
+    resources :players, :only => [:index, :show] do
+      get :bids_placed
+      get :bids_received
+    end
     resources :megatiles, :only => [:index, :show] do
+      resources :listings, :except => [:destroy, :update]
       resources :bids, :except => [:destroy, :update] do
-        post 'accept'
-        post 'reject'
-        post 'cancel'
+        post :accept
+        post :reject
+        post :cancel
       end
-      resources :resource_tiles, :only => [:index, :show]
+      resources :resource_tiles, :only => [:index, :show] do
+        post :bulldoze
+        post :clearcut
+        post :build
+      end
     end
   end
     

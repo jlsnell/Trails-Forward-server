@@ -16,6 +16,9 @@ class Player < ActiveRecord::Base
   validates_presence_of :world
   validates_numericality_of :balance
   
+  has_many :bids_placed, :class_name => 'Bid', :inverse_of => :bidder, :foreign_key => 'bidder_id'
+  has_many :bids_received, :class_name => 'Bid', :inverse_of => :current_owner, :foreign_key => 'current_owner_id'
+  
   api_accessible :id_and_name do |template|
     template.add :id
     template.add 'user.name', :as => :name
