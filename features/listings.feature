@@ -11,10 +11,10 @@ Feature: Bid on a megatile
 		Then I should see the megatile listed for sale
 		
 	Scenario: Create a listing for a megatile
-	Given I have a world
-		And I have one user "riley@example.com" with password "letmein"
-		And I have a player in the world
-		And I own a megatile in the world
-	When I list my megatile for sale
-	  And I retrieve the active listings for the world
-	Then I should see my megatile listed for sale
+    Given I have a world
+    	And I have one user "riley@example.com" with password "letmein"
+    	And I have a player in the world
+    	And I own a megatile in the world
+    When I list my megatile for sale
+      And I retrieve the active listings for the world
+    Then I should see my megatile listed for sale
