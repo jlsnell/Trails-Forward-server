@@ -3,9 +3,6 @@ require 'narray'
 
 BirdOutput = Struct.new(:outputMatrix, :count)
 
-
-
-
 class Matrix_utils_test
   
   #tests bwcc
