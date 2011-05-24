@@ -4,7 +4,14 @@ class Bid < ActiveRecord::Base
   versioned
   acts_as_api
   
-  belongs_to :bidder, :class_name => 'Player'
+  Verbiage = {:active => "Offered",
+              :offered => "Offered",
+              :accepted => "Accepted",
+              :rejected => "Rejected",
+              :cancelled => "Cancelled"
+  }
+  
+  belongs_to :bidder, :class_name => 'Player', :foreign_key => 'bidder_id'
   belongs_to :current_owner, :class_name => 'Player'
   belongs_to :listing
   
@@ -22,13 +29,9 @@ class Bid < ActiveRecord::Base
   validates :money, :numericality => {:greater_than_or_equal_to => 0}
   validate :requested_land_must_all_have_same_owner
   
+  scope :active, lambda { where(:status => Verbiage[:active]) }
   
-  Verbiage = {:active => "Offered",
-              :offered => "Offered",
-              :accepted => "Accepted",
-              :rejected => "Rejected",
-              :cancelled => "Cancelled"
-  }
+
   
   def requested_land_must_all_have_same_owner
     owners = Set.new
@@ -64,6 +67,8 @@ class Bid < ActiveRecord::Base
   api_accessible :bid_private, :extend => :bid_public do |template|
     template.add :money
     template.add :counter_to, :template => :bid_public, :if => :is_counter_bid?
+    template.add 'offered_land.megatiles', :as => :offered_land, :template => :id_and_name, :if => lambda{|b| b.offered_land != nil}
+    template.add 'requested_land.megatiles', :as => :requested_land, :template => :id_and_name, :if => lambda{|b| b.requested_land != nil}
   end
   
   

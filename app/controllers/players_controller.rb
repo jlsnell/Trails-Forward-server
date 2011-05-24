@@ -47,6 +47,38 @@ class PlayersController < ApplicationController
     authorize! :update_player, @player
   end
 
+  def bids_placed
+    @player = Player.find(params[:player_id])
+    authorize! :see_bids, @player
+    
+    @bids = @player.bids_placed
+    if params.has_key? :active
+      @bids = @bids.where(:status => Bid::Verbiage[:active])
+    end
+    
+    respond_to do |format|
+      format.json  { render_for_api :bid_private, :json => @bids, :root => :bids  }
+      format.xml  { render_for_api :bid_private, :xml  => @bids, :root => :bids  }    
+    end
+  end
+
+  def bids_received
+    @player = Player.find(params[:player_id])
+    authorize! :see_bids, @player
+    
+    @bids = @player.bids_received
+    
+    if params.has_key? :active
+      @bids = @bids.where(:status => Bid::Verbiage[:active])
+    end
+    
+    respond_to do |format|
+      format.json  { render_for_api :bid_private, :json => @bids, :root => :bids  }
+      format.xml  { render_for_api :bid_private, :xml  => @bids, :root => :bids  }    
+    end
+  end
+
+
   # POST /players
 
   # def create

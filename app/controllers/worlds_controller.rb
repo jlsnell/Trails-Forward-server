@@ -6,6 +6,7 @@ class WorldsController < ApplicationController
   # GET /worlds.xml
   def index
     @worlds = World.all
+    authorize! :index_worlds, World
 
     respond_to do |format|
       format.xml  { render_for_api :world_without_tiles, :xml  => @worlds, :root => :worlds  }
@@ -18,6 +19,8 @@ class WorldsController < ApplicationController
   # GET /worlds/1.xml
   def show
     @world = World.find(params[:id])
+    authorize! :show_world, @world
+    
     respond_to do |format|
       format.xml  { render_for_api :world_without_tiles, :xml  => @world, :root => :world  }
       format.json { render_for_api :world_without_tiles, :json => @world, :root => :world  }

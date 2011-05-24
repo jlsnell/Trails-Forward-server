@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
   
   before_filter :authenticate_user!, :except => [:authenticate_for_token]
+  skip_authorization_check :only => :authenticate_for_token
   
   # POST /users/authenticate_for_token
   def authenticate_for_token

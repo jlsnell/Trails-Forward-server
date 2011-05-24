@@ -23,6 +23,8 @@ Given /^a bid has been placed on that owned megatile$/ do
   biddata = ActiveSupport::JSON.decode(@response.body)
   biddata.has_key?("bid").should be true
   biddata["bid"].has_key?("id").should be true
+  @bid = Bid.find biddata["bid"]["id"]
+  @bid.should_not be nil
 end
 
 Given /^I can see the bids on that owned megatile$/ do
@@ -44,6 +46,8 @@ Then /^I should get a bid id$/ do
   data = ActiveSupport::JSON.decode(@response.body)
   data.has_key?("bid").should be true
   data["bid"].has_key?("id").should be true
+  @bid = Bid.find data["bid"]["id"]
+  @bid.should_not be nil
 end
 
 Then /^I should not get a bid id$/ do
@@ -98,3 +102,45 @@ end
 Then /^the losing bidders should be notified$/ do
   pending # express the regexp above with the code you wish you had
 end
+
+Then /^I should see that I have placed that bid$/ do
+  @response = get world_player_bids_placed_path(@world, @player), 
+    :format => :json, 
+    :auth_token => @user.authentication_token
+  bidsdata = ActiveSupport::JSON.decode(@response.body)
+  bidsdata.has_key?("bids").should be true
+  
+  found_the_bid = false
+  
+  bidsdata["bids"].each do |biddata|
+    biddata.has_key?("id").should be true
+    biddata.has_key?("money").should be true
+    biddata.has_key?("bidder").should be true
+    if biddata["id"] == @bid.id
+      found_the_bid = true 
+    end
+  end
+  found_the_bid.should be true
+end
+
+Then /^I should see that I have received that bid$/ do
+  @response = get world_player_bids_received_path(@world, @player), 
+    :format => :json, 
+    :auth_token => @user.authentication_token,
+    :active => "Yep"
+  bidsdata = ActiveSupport::JSON.decode(@response.body)
+  bidsdata.has_key?("bids").should be true
+  
+  found_the_bid = false
+  
+  bidsdata["bids"].each do |biddata|
+    biddata.has_key?("id").should be true
+    biddata.has_key?("money").should be true
+    biddata.has_key?("bidder").should be true
+    if biddata["id"] == @bid.id
+      found_the_bid = true 
+    end
+  end
+  found_the_bid.should be true
+end
+

@@ -2,6 +2,15 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
+    
+    can :index_worlds, World do
+      true
+    end
+    
+    can :show_world, World do
+      true
+    end
+    
     can :access_private_data, Player, :user_id => user.id
     can :access_private_data, User, :id => user.id
     
@@ -16,6 +25,18 @@ class Ability
       world.player_for_user(user)
     end
     
+    can :index_listings, World do |world|
+      can? :do_things, world
+    end
+    
+    can :list_megatiles_for_sale, World do |world|
+      can? :do_things, world
+    end
+    
+    can :list_for_sale, Megatile do |megatile|
+      megatile.world.player_for_user(user) == megatile.owner
+    end
+    
     can :bid, Megatile do |megatile|
       #the user doesn't already own the tile
       (can? :do_things, megatile.world) and ( megatile.owner != megatile.world.player_for_user(user) )
@@ -24,6 +45,8 @@ class Ability
     can :see_bids, Megatile do |megatile|
       (megatile.world.player_for_user(user) == megatile.owner) or (megatile.owner == nil)
     end
+    
+    can :see_bids, Player, :user_id => user.id
     
     can :accept_bid, Bid do |bid|
       #assumes that all requested land in the bid has the same owner

@@ -19,3 +19,5 @@ Given /^I own a megatile in the world$/ do
   @my_megatile.owner = @player
   @my_megatile.save!
 end
+
+
